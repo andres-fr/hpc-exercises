@@ -1,0 +1,3 @@
+Note about thread affintiy:
+
+The tbb implementation sets the thread affinity by default. In order to achieve the same affinity with Intel OpenMP, export KMP_AFFINITY=physical.

@@ -1,0 +1,5 @@
+Make normal quality histo scripts.
+
+Investigate parallel_for_simple() work
+
+Investigate why then I use void TMyObserver::on_scheduler_entry(bool Is_worker)  system fault appears sometimes.
