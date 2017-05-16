@@ -5,7 +5,7 @@ http://code.compeng.uni-frankfurt.de/projects/vc
 https://github.com/VcDevel/Vc
 
 #### Install
-```shell
+```bash
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=/opt/Vc -DBUILD_TESTING=OFF <srcdir>
