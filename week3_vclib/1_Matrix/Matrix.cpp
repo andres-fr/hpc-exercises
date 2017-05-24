@@ -5,10 +5,15 @@
   /// 
   /// use "g++ Matrix.cpp -O3 -lVc; ./a.out" to run
 
+
+// andres local run version:
+// g++ -O3 -std=c++11 -I/opt/Vc/include -L/opt/Vc/lib  Matrix.cpp -o test -lVc && ./test
+
+
 // Finish SIMDized Vc version. Compare results and time.
 
-#include "../../../vectors/P4_F32vec4.h" // overloading of the SSE instruction
-#include "../../../TStopwatch.h"
+#include "../../libs/vectors/P4_F32vec4.h" // overloading of the SSE instruction
+#include "../../libs/TStopwatch.h"
 
 #include <Vc/Vc>
 using namespace Vc;
@@ -21,7 +26,7 @@ using namespace std;
 
 const int N = 1000; // matrix size. Has to be dividable by 4.
 
-const int NIter = 100; // repeat calculations many times in order to neglect memory read time
+const int NIter = 500; // repeat calculations many times in order to neglect memory read time
 
 float a[N][N] __attribute__ ((aligned(16)));
 float c[N][N] __attribute__ ((aligned(16)));
@@ -33,8 +38,7 @@ T f(T x) {
   return sqrt(x);
 }
 
-void CheckResults(const float a1[N][N], const float a2[N][N])
-{
+void CheckResults(const float a1[N][N], const float a2[N][N]){
   bool ok = 1;
   for(int i=0; i<N; i++)
     for(int j=0; j<N; j++)
@@ -79,8 +83,20 @@ int main() {
   timerSIMD.Stop();
 
    /// Vc
-  TStopwatch timerVc;
   //TODO write the code using Vc
+  Vc::float_v vcVec;
+  TStopwatch timerVc;
+  
+  for (int ii=0; ii<NIter; ++ii){
+    for (int i=0; i<N; ++i) {
+      for (int j=0; j<N/4; ++j){
+        // copy the contents of the matrix into vcArray, parallelized?
+        vcVec.load(a[i]+j* Vc::float_v::Size, Vc::Aligned);
+        // perform sqrt
+        f(vcVec).store(c_simdVc[i]+j* Vc::float_v::Size, Vc::Aligned);
+      }
+    }
+  }
   timerVc.Stop();
   
   double tScal  = timerScalar.RealTime()*1000;

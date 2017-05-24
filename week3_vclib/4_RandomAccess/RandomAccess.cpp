@@ -50,7 +50,10 @@ int main() {
     /// gather without masking
   float_v tmp;
   //TODO gather data with indices "index" from the array "input" into float_v tmp
-  // Use void  gather (const float *array, const uint_v &indexes)
+  // Use uint_v's method void  gather (const float *array, const uint_v &indexes)
+  
+  uint_v ind(index); // put the 4 indexes into ind
+  tmp.gather(input, ind);
 
   
   //check results
@@ -63,10 +66,12 @@ int main() {
   else   cout << "WRONG." << endl;
 
     /// gather with masking
-  float_v tmp2;
-  //TODO gather data with indices "index" from the array "input" into float_v tmp2, if the value of "input" large then 0.5
+  //TODO gather data with indices "index" from the array "input" into float_v tmp2, if the value of "input" large than 0.5
   // Use void  gather (const float *array, const uint_v &indexes, const float_m &mask)
 
+  float_m mask = tmp > 0.5f;
+  float_v tmp2(Vc::Zero);
+  tmp2.gather(input, ind, mask);
   
   //check results
   ok = 1;
@@ -91,7 +96,9 @@ int main() {
   //TODO create mask for values for an obtained tmp values, which are large than 0.5 and
   //TODO put all values smaller than 0.5 from tmp to the array "output" at the places given by indices "index"
   // Use void scatter (float *array, const uint_v &indexes, const float_m &mask) const
-
+  mask = tmp < 0.5f;
+  tmp.scatter(output, ind, mask);
+  
     //check results
   ok = 1;
   for(int i=0; i<float_v::Size; i++) {

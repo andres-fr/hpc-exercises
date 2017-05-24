@@ -5,6 +5,9 @@
 ///
 /// use "g++ QuadraticEquation_solution.cpp -O3 -fno-tree-vectorize -g -msse -lVc; ./a.out" to run
 
+// andres local run version:
+// g++ -O3 -fno-tree-vectorize -g -msse -std=c++11 -I/opt/Vc/include -L/opt/Vc/lib  QuadraticEquation.cpp -o test -lVc && ./test
+
 #include <Vc/Vc>
 using namespace Vc;
 
@@ -13,12 +16,12 @@ using namespace Vc;
 using namespace std;
 
 #include <stdlib.h> // rand
-#include "../../../TStopwatch.h"
+#include "../../libs/TStopwatch.h"
 
 static const int NVectors = 100000;
 static const int N = NVectors*float_v::Size;
 
-static const int NIterOut = 100;
+static const int NIterOut = 500;
 
 struct DataAOSElement {
   float a, b, c, // coefficients
@@ -55,9 +58,9 @@ struct DataSOA {
     *x; // a root
 };
 
-struct DataAOSOAElement {
+struct DataAOSOAElement { // vc approach
   
-  void SetMemory(float *m) {
+  void SetMemory(float* m) {
     a = m;
     b = m + float_v::Size;
     c = m + 2*float_v::Size;
@@ -190,32 +193,71 @@ int main() {
   timerScalar.Stop();
   
   // SIMD calculations with Vc using dataSIMD1 as input
+
+
+
   TStopwatch timerSIMD1;
-  for(int io=0; io<NIterOut; io++)
-  {
-    for(int i=0; i<NVectors; i++)
-    {
-      // TODO
+  for(int io=0; io<NIterOut; io++){
+    // declare SIMD buffers
+    Vc::float_v aV;
+    Vc::float_v bV;
+    Vc::float_v cV;
+    Vc::float_v det;
+    Vc::float_v xV;  
+    for(int i=0; i<NVectors; i++){
+      // copy 4 elements of the AOS to the SIMD buffers
+      for(int iV=0; iV<float_v::Size; iV++){
+        aV[iV] = dataSIMD1.data[i*float_v::Size + iV].a;
+        bV[iV] = dataSIMD1.data[i*float_v::Size + iV].b;
+        cV[iV] = dataSIMD1.data[i*float_v::Size + iV].c;
+      }
+      // perform calculations with the buffers
+      det = bV*bV - 4*aV*cV;
+      xV = (-bV+sqrt(det))/(2*aV);
+      // copy solution buffer to x
+      for(int iV=0; iV<float_v::Size; iV++){
+        dataSIMD1.data[i*float_v::Size + iV].x = xV[iV];
+      }
     }
   }
   timerSIMD1.Stop();
-  
+
+ 
   // SIMD calculations with Vc using dataSIMD2 as input (use cast here)
   TStopwatch timerSIMD2;
-  for(int io=0; io<NIterOut; io++)
-    for(int i=0; i<N; i+=float_v::Size)
-    {
-      // TODO
+  for(int io=0; io<NIterOut; io++){
+    Vc::float_v det;
+    for(int i=0; i<N; i+=float_v::Size){
+      // cast buffers
+      Vc::float_v& aV = (reinterpret_cast<float_v&>(dataSIMD2.a[i]));
+      Vc::float_v& bV = (reinterpret_cast<float_v&>(dataSIMD2.b[i]));
+      Vc::float_v& cV = (reinterpret_cast<float_v&>(dataSIMD2.c[i]));
+      Vc::float_v& xV = (reinterpret_cast<float_v&>(dataSIMD2.x[i]));
+      // perform calculations with the buffers
+      det = bV*bV - 4*aV*cV;
+      xV = (-bV+sqrt(det))/(2*aV); // xV is already a reference
     }
+  }
   timerSIMD2.Stop();
-  
-  // SIMD calculations with Vc using dataSIMD2 as input (use cast here)
+
+
+
+  //*** twice as slow as simd2. why??
+  // SIMD calculations with Vc using dataSIMD3 as input (use cast here)
   TStopwatch timerSIMD3;
-  for(int io=0; io<NIterOut; io++)
-    for(int i=0; i<NVectors; i++)
-    {
-      // TODO
+  for(int io=0; io<NIterOut; io++){
+    Vc::float_v det;
+    for(int i=0; i<NVectors; i++){
+      // cast buffers
+      Vc::float_v aV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].a));
+      Vc::float_v bV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].b));
+      Vc::float_v cV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].c));
+      Vc::float_v xV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].x));
+      // perform calculations with the buffers
+      det = bV*bV - 4*aV*cV;
+      xV = (-bV+sqrt(det))/(2*aV); // xV is already a reference
     }
+  }
   timerSIMD3.Stop();
   
   double tScal = timerScalar.RealTime()*1000;

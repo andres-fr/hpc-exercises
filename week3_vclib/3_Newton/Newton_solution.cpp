@@ -16,7 +16,7 @@
 #include <iostream> // cout
 using namespace std;
 
-#include "../../../TStopwatch.h"
+#include "../../libs/TStopwatch.h"
 
 #include <Vc/Vc> // Vector classes 
 using namespace Vc;

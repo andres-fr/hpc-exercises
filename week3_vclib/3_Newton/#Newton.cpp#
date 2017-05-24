@@ -35,8 +35,9 @@ const float P = 1e-5; // precision of root computation
 template<class T>
 T F(const T& x, const T& p1, const T& p2)
 {
-  // const T x2 = x * x;
-  // return p1 * x2*x + p2 * x2 + 6 * x + 80;
+  const T x2 = x * x;
+  return p1 * x2*x + p2 * x2 + 6 * x + 80;
+  
   return  80 + x * (6 + x * (p2 + x*p1));    // p1*x^3 + p2*x^2 + 6x + 80
 }
 

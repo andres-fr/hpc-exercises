@@ -18,33 +18,36 @@
 using namespace std;
 
 #include <Vc/Vc>
-using namespace Vc;
+// using namespace Vc;
 
 int main() {
 
-  const int NV = 3;
-  const int N = 11;
+  const int NV = 300;
+  const int N = 1100; // N is not allowed to be bigger than NV*4!!
   
   int in[N]; // copy from
-  int_v x[NV];
+  Vc::int_v x[NV]; // int_v has 4 ints for SIMD=128b register, x has 12 ints
   int out[N]; // copy in
 
   for( int i = 0; i < N; ++i)
     in[i] = i;
   
     /// -- Memory --
-    TStopwatch timerMemory;
+    
   {
-    Vc::Memory<int_v, N> array; // aligned memory
+    Vc::Memory<Vc::int_v, N> array; // aligned memory
+
 
       // scalar access:
     for (int i = 0; i < array.entriesCount(); ++i) {
       array[i] = in[i];     // write
+      //cout << ">>" << array[i] << endl;
     }
-
+    TStopwatch timerMemory;
       // vector access:
     for (int i = 0; i < array.vectorsCount(); ++i) {
       x[i] = array.vector(i); // read
+      //cout << i << ">>" << x[i] << endl;
     }
 
       // do something
@@ -53,33 +56,35 @@ int main() {
     }
   
     for (int i = 0; i < array.vectorsCount(); ++i) {
-      array.vector(i) = x[i];       // write
+      array.vector(i) = x[i];       // write back
     }
-    
+    timerMemory.Stop();
       // scalar access:
     for (int i = 0; i < array.entriesCount(); ++i) {
       out[i] = array[i]; // read
     }
 
+    
+  double tMemory = timerMemory.RealTime()*1000;
+  cout << "Elapsed time Memory: " << tMemory << " ms " << endl;
   }
 
-  timerMemory.Stop();
-  double tMemory = timerMemory.RealTime()*1000;
-  cout << "Memory" << endl;
-  for( int i = 0; i < N; ++i)
-    cout << out[i] << " ";
-  cout << endl;
-  cout << "Elapsed time Memory: " << tMemory << " ms " << endl;
+  
+  // cout << "Memory" << endl;
+  // for( int i = 0; i < N; ++i)
+  //   cout << out[i] << " ";
+  // cout << endl;
+  
 
   
     /// -- Load & Store s--
   TStopwatch timerLoadStore;
 
   {
-    int array[12] __attribute__ ((aligned(16)));
+    //int array[12] __attribute__ ((aligned(16)));
 
     for (int i = 0; i < NV; ++i) {
-      x[i].load( in + i * int_v::Size, Vc::Aligned );
+      x[i].load( in + i * Vc::int_v::Size, Vc::Aligned ); // copy the contents of "in" into x, parallelized
     }
 
       // do something
@@ -88,16 +93,16 @@ int main() {
     }
     
     for (int i = 0; i < NV; ++i) {
-      x[i].store( out + i * int_v::Size, Vc::Aligned );
+      x[i].store( out + i * Vc::int_v::Size, Vc::Aligned );  // copy the contents of x into "out", parallelized
     }
   }
 
   timerLoadStore.Stop();
   double tLoadStore = timerLoadStore.RealTime()*1000;
   cout << "Load & Store" << endl;
-  for( int i = 0; i < N; ++i)
-    cout << out[i] << " ";
-  cout << endl;
+  // for( int i = 0; i < N; ++i)
+  //   cout << out[i] << " ";
+  // cout << endl;
   cout << "Elapsed time LoadStore: " << tLoadStore << " ms " << endl;
 
   return 1;

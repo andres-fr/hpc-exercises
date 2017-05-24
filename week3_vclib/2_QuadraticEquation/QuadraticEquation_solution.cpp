@@ -13,7 +13,7 @@ using namespace Vc;
 using namespace std;
 
 #include <stdlib.h> // rand
-#include "../../../TStopwatch.h"
+#include "../../libs/TStopwatch.h"
 
 static const int NVectors = 100000;
 static const int N = NVectors*float_v::Size;
