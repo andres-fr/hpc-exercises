@@ -249,10 +249,10 @@ int main() {
     Vc::float_v det;
     for(int i=0; i<NVectors; i++){
       // cast buffers
-      Vc::float_v aV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].a));
-      Vc::float_v bV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].b));
-      Vc::float_v cV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].c));
-      Vc::float_v xV = (reinterpret_cast<float_v*>(dataSIMD3.data[i].x));
+      Vc::float_v& aV = *(reinterpret_cast<float_v*>(dataSIMD3.data[i].a));
+      Vc::float_v& bV = *(reinterpret_cast<float_v*>(dataSIMD3.data[i].b));
+      Vc::float_v& cV = *(reinterpret_cast<float_v*>(dataSIMD3.data[i].c));
+      Vc::float_v& xV = *(reinterpret_cast<float_v*>(dataSIMD3.data[i].x));
       // perform calculations with the buffers
       det = bV*bV - 4*aV*cV;
       xV = (-bV+sqrt(det))/(2*aV); // xV is already a reference

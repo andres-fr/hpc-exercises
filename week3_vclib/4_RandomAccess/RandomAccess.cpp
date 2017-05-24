@@ -7,6 +7,9 @@
 
   // TODO: finish the programm
 
+// g++ -O3 -fno-tree-vectorize -g -msse -std=c++11 -I/opt/Vc/include -L/opt/Vc/lib  RandomAccess.cpp -o test -lVc && ./test
+
+
 #include <Vc/Vc>
 using namespace Vc;
 
