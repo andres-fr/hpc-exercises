@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/fairroot/!svn/ver/13805/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse
+END
+Vctypedef.h
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/fairroot/!svn/ver/7237/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/Vctypedef.h
+END
+tsc.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/fairroot/!svn/ver/7237/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/tsc.h
+END
+TODO.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/fairroot/!svn/ver/7295/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/TODO.txt
+END
+Fit.cxx
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/fairroot/!svn/ver/13802/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/Fit.cxx
+END
+FitClasses.h
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/fairroot/!svn/ver/13802/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/FitClasses.h
+END
+hltsse.icproj
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/hltsse.icproj
+END
+CHANGELOG
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/fairroot/!svn/ver/7237/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/CHANGELOG
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/README
+END
+Stopwatch.h
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/Stopwatch.h
+END
+hltsse.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/hltsse.vcproj
+END
+P4_F32vec4.h
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/P4_F32vec4.h
+END
+Fit.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/fairroot/!svn/ver/7237/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/Fit.h
+END
+readme.txt
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/fairroot/!svn/ver/7237/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/readme.txt
+END
+vec_arithmetic.h
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/fairroot/!svn/ver/7236/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/vec_arithmetic.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/fairroot/!svn/ver/13802/cbmroot/development/ikulakov/SIMD_KF_Fit_benchmark/trunk/hltsse/Makefile
+END
