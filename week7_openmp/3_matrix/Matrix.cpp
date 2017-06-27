@@ -5,7 +5,7 @@
   /// 
   /// use "g++ Matrix.cpp -O3 -fopenmp -o mat -lVc; ./mat" to run
 
-// g++ -O3 -fopenmp -std=c++14 -Wall -Wextra -I/opt/Vc/include -L/opt/Vc/lib /home/afr/SS17/hpc-praktikum/week7_openmp/3_matrix/Matrix.cpp -o /home/afr/SS17/hpc-praktikum/week7_openmp/3_matrix/Matrix -lVc && /home/afr/SS17/hpc-praktikum/week7_openmp/3_matrix/Matrix
+// g++ -O3 -fopenmp -std=c++14 -Wall -Wextra -I/opt/Vc/include -L/opt/Vc/lib Matrix.cpp -o Matrix -lVc && ./Matrix
 
 
 // Parallelize the SIMDized version between cores isng OpenMP. Compare the results and time.
@@ -26,7 +26,7 @@ using namespace std;
 
 const int N = 1000; // matrix size. Has to be dividable by 4.
 
-const int NIter = 100; // repeat calculations many times in order to neglect memory read time
+const int NIter = 4000; // repeat calculations many times in order to neglect memory read time
 
 float a[N][N] __attribute__ ((aligned(16)));
 float c[N][N] __attribute__ ((aligned(16)));
@@ -79,31 +79,33 @@ int main() {
   timerVc.Stop();
   
    ///OpenMP
-  TStopwatch timerOMP;
-  for( int ii = 0; ii < NIter; ii++ ) // repeat several times to improve time measurement precision
-  {
-#pragma omp parallel for num_threads(omp_get_num_procs())
+  // TStopwatch timerOMP;
+  int NThreads = 1; // best is 1...
+  double start_time = omp_get_wtime();
+  for( int ii = 0; ii < NIter; ii++ ){ // repeat several times to improve time measurement precision
+    #pragma omp parallel for num_threads(NThreads) // ************** omp_get_num_procs()?? the more threads, slower it gets... why?
     for( int i = 0; i < N; i++ ) {
       for( int j = 0; j < N; j+=float_v::Size ) {
-          float_v &aVec = (reinterpret_cast<float_v&>(a[i][j]));
+        float_v &aVec = (reinterpret_cast<float_v&>(a[i][j]));
           float_v &cVec = (reinterpret_cast<float_v&>(c_omp[i][j]));
           cVec = sqrt(aVec);
       }
     }
   }
-  timerOMP.Stop();
-  
-  double tScal  = timerScalar.RealTime()*1000;
-  double tVc    = timerVc.RealTime()*1000;
-  double tOMP   = timerOMP.RealTime()*1000;
-  
-  cout << "Time scalar:  " << tScal << " ms " << endl;
-  cout << "Time Vc:      " << tVc << " ms, speed up " << tScal/tVc << endl;
-  cout << "Time OpenMP:  " << tOMP << " ms, speed up " << tScal/tOMP << endl;
-  
-  CheckResults(c,c_simd);
-  CheckResults(c,c_omp);
+  double time_mp = (omp_get_wtime() - start_time) * 1000; // miliseconds
+// timerOMP.Stop();
 
-  return 1;
+double tScal  = timerScalar.RealTime()*1000;
+double tVc    = timerVc.RealTime()*1000;
+double tOMP   = time_mp;//timerOMP.RealTime()*1000;
   
+cout << "Time scalar:  " << tScal << " ms " << endl;
+cout << "Time Vc:      " << tVc << " ms, speed up " << tScal/tVc << endl;
+cout << "Time OpenMP with "<< NThreads <<" threads: " << tOMP << " ms, speed up " << tScal/tOMP << endl;
+
+CheckResults(c,c_simd);
+CheckResults(c,c_omp);
+
+return 1;
+
 }
